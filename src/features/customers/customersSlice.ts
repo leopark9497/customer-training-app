@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
-import { CustomerType } from './Customer';
-import { fetchCustomers } from './customersApi';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
+import { CustomerGetType } from './CustomerCard';
+import { addCustomer, CustomerPostType, deleteCustomer, fetchCustomers } from './customersApi';
 
 export interface CustomersState {
-  value: Array<CustomerType>;
-  status: 'idle' | 'loading' | 'failed';
+  value: Array<CustomerGetType>;
+  status: 'idle' | 'fetchingCustomers' | 'deletingCustomer' | 'addingCustomer';
 }
 
 const initialState: CustomersState = {
@@ -27,6 +27,24 @@ export const customersAsync = createAsyncThunk(
   }
 );
 
+export const deleteCustomerAsync = createAsyncThunk(
+  'customers/deleteCustomer',
+  async (customerUrl: string) => {
+    const response = await deleteCustomer(customerUrl);
+    
+    return response
+  }
+);
+
+export const addCustomerAsync = createAsyncThunk(
+  'customers/addCustomer',
+  async (customerDetails: CustomerPostType) => {
+    const response = await addCustomer(customerDetails);
+    
+    return response
+  }
+);
+
 export const customersSlice = createSlice({
   name: 'customers',
   initialState,
@@ -38,11 +56,23 @@ export const customersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(customersAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'fetchingCustomers';
       })
       .addCase(customersAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = 'idle'
         state.value = action.payload;
+      })
+      .addCase(deleteCustomerAsync.pending, (state) => {
+        state.status = 'deletingCustomer';
+      })
+      .addCase(deleteCustomerAsync.fulfilled, (state) => {
+        state.status = 'idle';
+      })
+      .addCase(addCustomerAsync.pending, (state) => {
+        state.status = 'addingCustomer';
+      })
+      .addCase(addCustomerAsync.fulfilled, (state) => {
+        state.status = 'idle';
       });
   },
 });
