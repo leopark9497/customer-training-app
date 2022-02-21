@@ -6,8 +6,8 @@ import Modal from '@mui/material/Modal';
 import { CircularProgress, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { addCustomerAsync, customersAsync } from './customersSlice';
-import { CustomerPostType } from './customersApi';
+import { addTrainingAsync, trainingsAsync } from './trainingSlice';
+import { TrainingPostType } from './trainingsApi';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -28,38 +28,28 @@ const textFieldStyle = {
     paddingBottom: 15
 }
 
-export const fields : Array<{id: keyof CustomerPostType, label: string}> = [
+const fields = [
   {
-    id: 'firstname',
-    label: 'First name'
+    id: 'date',
+    label: 'Date'
   },
   {
-    id: 'lastname',
-    label: 'Last name'
+    id: 'activity',
+    label: 'Activity'
   },
   {
-    id: 'phone',
-    label: 'Phone numbers'
+    id: 'duration',
+    label: 'Duration'
   },
   {
-    id: 'streetaddress',
-    label: 'Street Address'
-  },
-  {
-    id: 'postcode',
-    label: 'Postcode'
-  },
-  {
-    id: 'city',
-    label: 'City'
-  },
+    id: 'customer',
+    label: 'Customer ID'
+  }
 ]
-
-export function FormField({value, id, label, hook}: {value: string, id: string, label: String, hook: Function}) {
+function FormField({id, label, hook}: {id: string, label: String, hook: Function}) {
 
   return (
     <TextField
-      value={value}
       required
       style={textFieldStyle}
       id={id}
@@ -73,19 +63,17 @@ export function FormField({value, id, label, hook}: {value: string, id: string, 
   );
 }
 
-export default function NewCustomerForm() {
+export default function NewTrainingForm() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const asyncStatus = useSelector((state: RootState) => state.customers.status);
+  const asyncStatus = useSelector((state: RootState) => state.trainings.status);
   const dispatch = useDispatch();
-  const [customerDetails, setCustomerDetails] = React.useState<CustomerPostType>({
-    firstname: '',
-    lastname: '',
-    phone: '',
-    streetaddress: '',
-    postcode: '',
-    city: ''
+  const [trainingDetails, setTrainingDetails] = React.useState<TrainingPostType>({
+    date: '',
+    activity: '',
+    duration: '',
+    customer: '',
   });
 
   return (
@@ -94,7 +82,7 @@ export default function NewCustomerForm() {
         variant="contained"
         onClick={handleOpen}
       >
-        Add a new customer
+        Add a new training
       </Button>
       <Modal
         open={open}
@@ -104,25 +92,24 @@ export default function NewCustomerForm() {
         <Box sx={style} component="form" noValidate autoComplete="off">
           <div>
             <Typography variant="h5" component="h2" sx={{ paddingBottom: 5 }}>
-              New customer
+              New training
             </Typography>
             {fields.map((field) => (
               <FormField
-                value={customerDetails[field.id]}
                 key={field.id}
                 id={field.id}
                 label={field.label}
                 hook={(value: string) =>
-                  setCustomerDetails({ ...customerDetails, [field.id]: value })
+                  setTrainingDetails({ ...trainingDetails, [field.id]: value })
                 }
               />
             ))}
           </div>
-          {asyncStatus !== "addingCustomer" ? (
+          {asyncStatus !== "addingTraining" ? (
             <Button
               onClick={async () => {
-                await dispatch(addCustomerAsync(customerDetails));
-                dispatch(customersAsync());
+                await dispatch(addTrainingAsync(trainingDetails));
+                dispatch(trainingsAsync());
               }}
             >
               Submit

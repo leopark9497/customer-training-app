@@ -9,6 +9,8 @@ import * as serviceWorker from './serviceWorker';
 import { Customers } from './features/customers/Customers';
 import AppBar from './components/AppBar/AppBar';
 import { Container } from '@mui/material';
+import { Trainings } from './features/trainings/Trainings';
+import { Customer } from './features/customers/Customer';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,6 +21,8 @@ ReactDOM.render(
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="/customers" element={<Customers />} />
+            <Route path="/customers/:id" element={<Customer />} />
+            <Route path="/trainings" element={<Trainings />} />
           </Routes>
         </Container>
       </BrowserRouter>
