@@ -109,7 +109,8 @@ export default function NewTrainingForm() {
             <Button
               onClick={async () => {
                 await dispatch(addTrainingAsync(trainingDetails));
-                dispatch(trainingsAsync());
+                await dispatch(trainingsAsync());
+                handleClose();
               }}
             >
               Submit

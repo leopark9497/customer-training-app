@@ -1,8 +1,9 @@
 import { Box, Typography, Button, CircularProgress } from "@mui/material";
-import { style } from "@mui/system";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { RootState } from "../../app/store";
 import NewTrainingForm from "../trainings/NewTrainingForm";
 import { Training, TrainingGetType } from "../trainings/TrainingCard";
 import { CustomerPostType } from "./customersApi";
@@ -20,8 +21,9 @@ export function Customer() {
   });
   const [trainings, setTrainings] = useState<Array<TrainingGetType>>([]);
   const { id } = useParams();
+  const status = useSelector((state: RootState) => state.trainings.status);
 
-  useState(() => {
+  useEffect(() => {
     axios
       .get(`https://customerrest.herokuapp.com/api/customers/${id}`)
       .then((response: any) => setDetails(response.data));
@@ -35,7 +37,7 @@ export function Customer() {
           setTrainings(response.data.content);
         }
       });
-  });
+  }, [status]);
 
   return (
     <div>
@@ -96,20 +98,18 @@ export function Customer() {
           </Typography>
           <NewTrainingForm />
         </Box>
-        {!!trainings.length &&
-          trainings.map((sortedTraining: TrainingGetType) => {
-            return (
-              <Training
-                key={sortedTraining.date}
-                information={sortedTraining}
-              />
-            );
-          })}
-          {!trainings.length &&
-            <Typography>
-                No training was added
-            </Typography>
-          }
+        <Box style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          {!!trainings.length &&
+            trainings.map((sortedTraining: TrainingGetType) => {
+              return (
+                <Training
+                  key={sortedTraining.date}
+                  information={sortedTraining}
+                />
+              );
+            })}
+          {!trainings.length && <Typography>No training was added</Typography>}
+        </Box>
       </Box>
     </div>
   );
