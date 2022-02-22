@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from "react-router-dom";
 
 
-const pages = ['customers', 'trainings', 'calendar'];
+const pages = ['customers', 'trainings'];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);

@@ -1,13 +1,13 @@
 import { Card, CardContent, Typography, CardActions, Button, Modal } from "@mui/material"
 import { useDispatch } from "react-redux";
 import { trainingsAsync, deleteTrainingAsync } from "./trainingSlice";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Box } from "@mui/system";
+import moment from "moment";
 
 export interface TrainingGetType {
     date: string,
-    duration: string,
+    duration: number,
     activity: string,
     links: Array<{rel: 'self' | 'training' | 'customer', href: string}>,
     content: Array<any>,
@@ -30,7 +30,6 @@ export function Training ({ information}: { information: TrainingGetType}) {
     const { date, duration, activity, links } =
       information;
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [openDeleteModal, setOpenDeleteModel] = useState(false);
     const handleOpenDeleteModel = () => setOpenDeleteModel(true)
     const handleCloseDeleteModel = () => setOpenDeleteModel(false)
@@ -42,7 +41,7 @@ export function Training ({ information}: { information: TrainingGetType}) {
       >
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            {date}
+            {moment(date).format('hh:mm DD-MM-YYYY')}
           </Typography>
           <Typography variant="h5" component="div">
             {duration} minutes
